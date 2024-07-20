@@ -2,8 +2,9 @@
 
 diesel::table! {
     sensor_readings (id) {
-        id -> Nullable<Integer>,
-        created_on -> Nullable<Timestamp>,
+        id -> Integer,
+        sensor_name -> Text,
+        created_on -> Timestamp,
         temperature -> Float,
         humidity -> Float,
         carbon_dioxide -> Float,
@@ -12,7 +13,6 @@ diesel::table! {
         pm1_0 -> Float,
         pm2_5 -> Float,
         pm10 -> Float,
-        sensor_name -> Text,
     }
 }
 
