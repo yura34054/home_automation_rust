@@ -1,0 +1,297 @@
+<h2 style="text-align: center;">Sensor name</h2>
+
+<div class="main-container">
+
+  <div class="chart-container long-chart">
+    <canvas id="CarbonDioxideChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <hr class="divider">
+
+  <div class="chart-container short-chart">
+    <canvas id="TemperatureChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="HumidityChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="VocChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="NOxChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <hr class="divider">
+
+  <div class="chart-container long-chart">
+    <canvas id="PM2_5Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="PM1_0Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="PM10Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+</div>
+<style>
+  .main-container {
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap;
+  gap: 2vw;
+  margin: 0 2vw;
+  justify-content: space-between;
+}
+
+.divider {
+    height:2px;
+    border-width:0;
+    color:gray;
+    background-color:gray;
+    width:100%;
+}
+
+.chart-container {
+  position: relative;
+  width: 0;
+  min-width: 90%;
+  flex-grow: 1;
+  height: 40vmin;
+}
+
+@media screen and (min-width: 900px) {
+    .short-chart {
+        min-width: 40%;
+        flex-grow: 1;
+        height: 30vmin;
+    }
+
+    .long-chart {
+        min-width: 100%;
+        flex-grow: 2;
+        height: 40vmin;
+    }
+
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+    var plugins = [{
+            afterDraw: chart => {
+                if (chart.tooltip?._active?.length) {
+                    let x = chart.tooltip._active[0].element.x;
+                    let yAxis = chart.scales.y;
+                    let ctx = chart.ctx;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(x, yAxis.top);
+                    ctx.lineTo(x, yAxis.bottom);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.stroke();
+                    ctx.restore();
+                }
+        }
+    }];
+  
+  
+    var options = {
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'time',
+                grid: {
+                    display: false
+                }
+            },
+
+            y: {
+                stacked: true,
+                grid: {
+                    display: true,
+                    color: "rgba(255,99,132,0.2)"
+                }
+            },
+        },
+      
+        interaction: {
+            intersect: false,
+            mode: 'index',
+        },
+      
+        datasets: {
+            line: {
+                pointRadius: 0 // disable for all `'line'` datasets
+            }
+        },
+    }
+
+    
+    {% set time_lables = data | map(attribute="created_on") %}
+
+    const labels = {{ time_lables | json_encode() | safe }};
+
+    new Chart(
+        document.getElementById('CarbonDioxideChart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'CO2 ppm',
+                    data: {{ data | map(attribute="carbon_dioxide") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        }
+    );
+
+    new Chart(
+        document.getElementById('TemperatureChart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Temperature',
+                    data: {{ data | map(attribute="temperature") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        }
+    );
+
+    new Chart(
+        document.getElementById('HumidityChart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Humidity',
+                    data: {{ data | map(attribute="humidity") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        }
+    );
+
+    new Chart(
+        document.getElementById('VocChart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'VOC Index',
+                    data: {{ data | map(attribute="voc_index") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        }
+    );
+
+    new Chart(
+        document.getElementById('NOxChart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'NOx Index',
+                    data: {{ data | map(attribute="nox_index") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        }
+    );
+
+    new Chart(
+        document.getElementById('PM2_5Chart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                    datasets: [{
+                    label: 'PM 2.5',
+                    data: {{ data | map(attribute="pm2_5") | json_encode() | safe }},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+        },
+    );
+
+    new Chart(
+        document.getElementById('PM1_0Chart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                    datasets: [{
+                        label: 'PM 1.0',
+                        data: {{ data | map(attribute="pm1_0") | json_encode() | safe }},
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                }]
+            },
+        },
+    );
+
+    new Chart(
+        document.getElementById('PM10Chart'),
+        {
+            type: 'line',
+            options: options,
+            plugins: plugins,
+            data: {
+                labels: labels,
+                    datasets: [{
+                        label: 'PM 10',
+                        data: {{ data | map(attribute="pm10") | json_encode() | safe }},
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                }]
+            },
+        },
+    );
+
+
+</script>
+ 

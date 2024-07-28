@@ -8,4 +8,9 @@ rocket = { version = "0.5.1", features = ["json"] }
 diesel = { version = "2.2.0", features = ["sqlite", "chrono"] }
 dotenvy = "0.15"
 chrono = { version = "0.4.38", features = ["serde"] }
+tera = { version = "1", features = ["builtins"] }
 
+[dependencies.rocket_dyn_templates]
+template_dir = "templates"
+version = "0.1.0"
+features = ["tera"]

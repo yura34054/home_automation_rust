@@ -1,15 +1,43 @@
 extern crate rocket; 
+
 use chrono::{TimeDelta, Utc};
 use db::models::{Sensor, SensorReading, SensorReadingInput};
 use rocket::serde::json::Json;
+use rocket_dyn_templates::{Template, context};
 
 use diesel::prelude::*;
 pub mod db;
 
 
-#[rocket::get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+#[rocket::get("/<sensor>")]
+fn index(sensor: String) -> Template {
+    use db::schema::sensor_readings::dsl::*;
+    let conn = &mut db::establish_connection();
+
+    let seconds: i64 = 2*3600;
+    let data = sensor_readings
+        .filter(
+            created_on.ge(
+                Utc::now()
+                .naive_utc()
+                .checked_sub_signed(TimeDelta::try_seconds(seconds).unwrap())
+                .unwrap()
+            )
+        )
+        .filter(sensor_name.eq(sensor))
+        .load::<SensorReading>(conn);
+
+    let data = match data {
+        Ok(data) => data,
+        Err(err) => match err {
+            diesel::result::Error::NotFound => vec![],
+            _ => panic!("Database error - {}", err),
+        }
+    };
+
+    Template::render("index", context! { 
+        data: data, 
+    })
 }
 
 
@@ -72,13 +100,14 @@ fn get_sensor_readings(sensor: String, seconds: Option<i64>) ->  Json<Vec<Sensor
         }
     };
 
-    Json(data)    
+    Json(data)  
 }
 
 
 #[rocket::launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", rocket::routes![index, create_sensor_reading, get_sensor_readings])
+        .mount("/", rocket::routes![index])
+        .mount("/api", rocket::routes![create_sensor_reading, get_sensor_readings])
+        .attach(Template::fairing())
 }
-
