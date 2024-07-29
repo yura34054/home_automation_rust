@@ -11,33 +11,7 @@ pub mod db;
 
 #[rocket::get("/<sensor>")]
 fn index(sensor: String) -> Template {
-    use db::schema::sensor_readings::dsl::*;
-    let conn = &mut db::establish_connection();
-
-    let seconds: i64 = 2*3600;
-    let data = sensor_readings
-        .filter(
-            created_on.ge(
-                Utc::now()
-                .naive_utc()
-                .checked_sub_signed(TimeDelta::try_seconds(seconds).unwrap())
-                .unwrap()
-            )
-        )
-        .filter(sensor_name.eq(sensor))
-        .load::<SensorReading>(conn);
-
-    let data = match data {
-        Ok(data) => data,
-        Err(err) => match err {
-            diesel::result::Error::NotFound => vec![],
-            _ => panic!("Database error - {}", err),
-        }
-    };
-
-    Template::render("index", context! { 
-        data: data, 
-    })
+    Template::render("charts", context! {})
 }
 
 
@@ -70,8 +44,37 @@ fn create_sensor_reading(sensor_reading: Json<SensorReadingInput>) -> rocket::ht
 }
 
 
-#[rocket::get("/get_sensor_readings/<sensor>/<seconds>")]
-fn get_sensor_readings(sensor: String, seconds: Option<i64>) ->  Json<Vec<SensorReading>> {
+
+#[rocket::get("/<sensor>/sensor_readings/from_id/<reading_id>")]
+fn get_sensor_readings_from_id(sensor: String, reading_id: Option<i32>) ->  Json<Vec<SensorReading>> {
+    use db::schema::sensor_readings::dsl::*;
+        let conn = &mut db::establish_connection();
+
+    let reading_id: i32 = match reading_id {
+        Some(reading_id) => reading_id,
+        None => return Json(Vec::new()),
+    };
+
+    let data = sensor_readings
+        .filter(id.gt(reading_id))
+        .filter(sensor_name.eq(sensor))
+        .load::<SensorReading>(conn);
+
+    let data = match data {
+        Ok(data) => data,
+        Err(err) => match err {
+            diesel::result::Error::NotFound => return Json(Vec::new()),
+            _ => panic!("Database error - {}", err),
+        }
+    };
+
+    Json(data)  
+}
+
+
+
+#[rocket::get("/<sensor>/sensor_readings/from_seconds/<seconds>")]
+fn get_sensor_readings_from_seconds(sensor: String, seconds: Option<i64>) ->  Json<Vec<SensorReading>> {
     use db::schema::sensor_readings::dsl::*;
     let conn = &mut db::establish_connection();
 
@@ -108,6 +111,12 @@ fn get_sensor_readings(sensor: String, seconds: Option<i64>) ->  Json<Vec<Sensor
 fn rocket() -> _ {
     rocket::build()
         .mount("/", rocket::routes![index])
-        .mount("/api", rocket::routes![create_sensor_reading, get_sensor_readings])
+        .mount("/api", rocket::routes!
+            [
+                create_sensor_reading, 
+                get_sensor_readings_from_seconds,
+                get_sensor_readings_from_id,
+            ])
+        .mount("/public", rocket::fs::FileServer::from("./static"))
         .attach(Template::fairing())
 }

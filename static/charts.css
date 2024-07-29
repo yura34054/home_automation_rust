@@ -1,0 +1,40 @@
+.main-container {
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap;
+  gap: 2vw;
+  margin: 0 2vw;
+  justify-content: space-between;
+}
+
+.divider {
+    height:2px;
+    border-width:0;
+    color:gray;
+    background-color:gray;
+    width:100%;
+}
+
+.chart-container {
+  position: relative;
+  width: 0;
+  min-width: 90%;
+  flex-grow: 1;
+  height: 40vmin;
+}
+
+@media screen and (min-width: 900px) {
+    .short-chart {
+        min-width: 40%;
+        flex-grow: 1;
+        height: 30vmin;
+    }
+
+    .long-chart {
+        min-width: 100%;
+        flex-grow: 2;
+        height: 40vmin;
+    }
+}
+
+

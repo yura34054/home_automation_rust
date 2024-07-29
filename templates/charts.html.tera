@@ -1,0 +1,50 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+
+<link rel="stylesheet" href="public/charts.css">
+<script type="text/javascript" src="public/charts.js"></script>
+
+
+<h2 style="text-align: center;">Sensor name</h2>
+
+<div class="main-container">
+
+  <div class="chart-container long-chart">
+    <canvas id="CarbonDioxideChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <hr class="divider">
+
+  <div class="chart-container short-chart">
+    <canvas id="TemperatureChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="HumidityChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="VocChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="NOxChart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <hr class="divider">
+
+  <div class="chart-container long-chart">
+    <canvas id="PM2_5Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="PM1_0Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+  <div class="chart-container short-chart">
+    <canvas id="PM10Chart" style="max-width: 100%;"></canvas>
+  </div>
+
+</div>
+
