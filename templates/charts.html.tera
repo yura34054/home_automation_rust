@@ -2,11 +2,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 
-<link rel="stylesheet" href="public/charts.css">
-<script type="text/javascript" src="public/charts.js"></script>
+<link rel="stylesheet" href="public/charts/style.css">
+<script type="text/javascript" src="public/charts/script.js"></script>
 
 
-<h2 style="text-align: center;">Sensor name</h2>
+<h2 style="text-align: center;">{{ sensor_name }}</h2>
 
 <div class="main-container">
 

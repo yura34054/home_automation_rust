@@ -38,10 +38,10 @@ pub struct SensorReadingInput {
 }
 
 
-#[derive(Serialize, Queryable, Identifiable, Selectable)]
+#[derive(Serialize, Queryable, Identifiable, Selectable, Associations, Debug, PartialEq)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = sensor_readings)]
-#[diesel(belongs_to(Sensor))]
+#[diesel(belongs_to(Sensor, foreign_key = sensor_name))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct SensorReading {
     pub id: i32,

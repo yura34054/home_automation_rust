@@ -1,0 +1,27 @@
+.main-container {
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap;
+  gap: 2vw;
+  margin: 0 2vw;
+  justify-content: space-between;
+}
+
+
+.card {
+  position: relative;
+  width: 0;
+  min-width: 90%;
+  flex-grow: 1;
+  height: 40vmin;
+}
+
+@media screen and (min-width: 900px) {
+    .short-chart {
+        min-width: 30%;
+        flex-grow: 1;
+        height: 30vmin;
+    }
+}
+
+

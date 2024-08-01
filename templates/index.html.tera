@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="public/index/style.css">
+
+<div class="main-container">
+
+{% for reading in readings %}
+  <div class="card">
+
+    <h>{{ reading.sensor_name }}</h>
+
+    <table>
+        <tr>
+            <td>time:</td>
+            <td>{{ reading.created_on }}</td>
+        </tr>
+
+        <tr>
+            <td>CO2:</td>
+            <td>{{ reading.carbon_dioxide }}</td>
+        </tr>
+        <tr>
+            <td>Humidity:</td>
+            <td>{{ reading.humidity }}</td>
+        </tr>
+        <tr>
+            <td>Temperature:</td>
+            <td>{{ reading.temperature }}</td>
+        </tr>
+
+        <tr>
+            <td>VOC Index:</td>
+            <td>{{ reading.voc_index }}</td>
+        </tr>
+        <tr>
+            <td>NOX Index:</td>
+            <td>{{ reading.nox_index }}</td>
+        </tr>
+
+        <tr>
+            <td>PM 1.0:</td>
+            <td>{{ reading.pm1_0 }}</td>
+        </tr>
+        <tr>
+            <td>PM 2.5:</td>
+            <td>{{ reading.pm2_5 }}</td>
+        </tr>
+        <tr>
+            <td>PM 10:</td>
+            <td>{{ reading.pm10 }}</td>
+        </tr>
+    </table>
+
+  <div> 
+{% endfor %}
+</div>
+
+
