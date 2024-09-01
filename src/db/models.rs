@@ -18,7 +18,7 @@ pub struct Sensor {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = sensor_readings)]
 #[diesel(belongs_to(Sensor))]
-#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SensorReadingInput {
     pub sensor_name: String,
 
@@ -42,7 +42,7 @@ pub struct SensorReadingInput {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = sensor_readings)]
 #[diesel(belongs_to(Sensor, foreign_key = sensor_name))]
-#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SensorReading {
     pub id: i32,
     pub sensor_name: String,

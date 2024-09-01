@@ -111,7 +111,7 @@ function UpdateChart(newData, chart) {
 
 // Call the getJsonData function and use the returned data in multiple functions
 async function render_charts() {
-    url = `api${window.location.pathname}/sensor_readings/from_seconds/7200`
+    url = `api/sensor_reading/from_seconds${window.location.pathname}/7200`
     const jsonData = await fetchJsonData(url);
 
     if (!jsonData) {
@@ -128,7 +128,7 @@ async function render_charts() {
 
 
 async function update_charts() {
-    url = `api${window.location.pathname}/sensor_readings/from_id/${last_id}`
+    url = `api/sensor_readings/from_id${window.location.pathname}/${last_id}`
     const jsonData = await fetchJsonData(url);
 
     if (!jsonData || !jsonData.length) {
